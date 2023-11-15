@@ -1,6 +1,7 @@
 from tkinter import*
 from PIL import Image,ImageTk
 from employee import employeeClass
+from supplier import supplierClass
 class IMS:
     def __init__(self,root):
         self.root=root
@@ -34,7 +35,7 @@ class IMS:
        
         btn_employee=Button(LeftMenu,text="Employee",command=self.employee,font=("times new roman",20,"bold"),bg="white",bd=3,cursor="hand2")
         btn_employee.pack(side=TOP,fill=X)
-        btn_Supplier=Button(LeftMenu,text="Supplier",font=("times new roman",20,"bold"),bg="white",bd=3,cursor="hand2")
+        btn_Supplier=Button(LeftMenu,text="Supplier",command=self.supplier,font=("times new roman",20,"bold"),bg="white",bd=3,cursor="hand2")
         btn_Supplier.pack(side=TOP,fill=X)
         btn_Category=Button(LeftMenu,text="Category",font=("times new roman",20,"bold"),bg="white",bd=3,cursor="hand2")
         btn_Category.pack(side=TOP,fill=X)
@@ -63,6 +64,11 @@ class IMS:
     def employee(self):
         self.new_win=Toplevel(self.root)
         self.new_obj=employeeClass(self.new_win)
+
+#==========================================================================
+    def supplier(self):
+        self.new_win=Toplevel(self.root)
+        self.new_obj=supplierClass(self.new_win)     
 
 
 
