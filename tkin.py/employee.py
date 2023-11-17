@@ -43,10 +43,10 @@ class employeeClass:
 
         txt_search=Entry(SearchFrame,textvariable=self.var_searchtxt,font=("goudy old style",15),bg='lightyellow').place(x=200,y=10)
         btn_search=Button(SearchFrame,text="Search",font=("goudy old style",15),bg='#4caf50',fg="white",cursor="hand2").place(x=410,y=9,width=150,height=30)
-
-
-      #------title-----
+        
+#==========Title==========      
         title=Label(self.root,text="Employee Details",font=("goudy old style",15),bg="#0f4d7d",fg="white").place(x=50,y=100,width=1000)  
+)  
 
 
 
