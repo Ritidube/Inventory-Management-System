@@ -16,7 +16,7 @@ class employeeClass:
         self.var_searchtxt=StringVar()
 
 
-        self.var_emp_id=StringVar()     #stringvar is taken for database mai koi error na aaye
+        self.var_emp_id=StringVar()               #stringvar is taken for database mai koi error na aaye
         self.var_gender=StringVar()
         self.var_contact=StringVar()
         self.var_name=StringVar()
@@ -176,7 +176,7 @@ class employeeClass:
                     ))
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
-
+    
 if __name__=="__main__":
     root=Tk()
     obj=employeeClass(root)
