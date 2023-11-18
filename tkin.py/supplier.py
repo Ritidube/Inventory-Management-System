@@ -98,6 +98,10 @@ class supplierClass:
         
         
         self.supplierTable.pack(fill=BOTH,expand=1)
+        self.supplierTable.bind("<ButtonRelease-1>",self.get_data)
+
+        self.show()
+#---------------------------------------------------------------------------------------------
 
 
 if __name__=="__main__":
