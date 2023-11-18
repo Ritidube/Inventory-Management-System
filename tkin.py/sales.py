@@ -55,7 +55,8 @@ class salesClass:
         lbl_image.place(x=700,y=110)
 
         #=======================================
-       # def show(self):
+       #
+       #  def show(self):
            # self.Sales_List.delete(0,END)
             #for i in os.listdr('bill'):
 
