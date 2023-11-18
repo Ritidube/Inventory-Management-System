@@ -3,7 +3,11 @@ from PIL import Image,ImageTk
 from employee import employeeClass
 from supplier import supplierClass
 from category import categoryClass
+<<<<<<< HEAD
 from sales import salesClass
+=======
+from product import productClass
+>>>>>>> f8b083f65bdf791820f93f680a7ff331d0fce968
 class IMS:
     def __init__(self,root):
         self.root=root
@@ -41,7 +45,7 @@ class IMS:
         btn_Supplier.pack(side=TOP,fill=X)
         btn_Category=Button(LeftMenu,text="Category",command=self.category,font=("times new roman",20,"bold"),bg="white",bd=3,cursor="hand2")
         btn_Category.pack(side=TOP,fill=X)
-        btn_products=Button(LeftMenu,text="Products",font=("times new roman",20,"bold"),bg="white",bd=3,cursor="hand2")
+        btn_products=Button(LeftMenu,text="Products",command=self.product,font=("times new roman",20,"bold"),bg="white",bd=3,cursor="hand2")
         btn_products.pack(side=TOP,fill=X)
         btn_sales=Button(LeftMenu,text="Sales",command=self.sales,font=("times new roman",20,"bold"),bg="white",bd=3,cursor="hand2")
         btn_sales.pack(side=TOP,fill=X)
@@ -74,7 +78,13 @@ class IMS:
 #==========================================================================
     def category(self):
         self.new_win=Toplevel(self.root)
-        self.new_obj=categoryClass(self.new_win)     
+        self.new_obj=categoryClass(self.new_win) 
+#===========================================================================   
+    def product(self):
+        self.new_win=Toplevel(self.root)
+        self.new_obj=productClass(self.new_win)
+
+
 
     def sales(self):
         self.new_win=Toplevel(self.root)
