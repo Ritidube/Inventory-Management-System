@@ -5,7 +5,13 @@ from supplier import supplierClass
 from category import categoryClass
 
 from sales import salesClass
+<<<<<<< HEAD
 from product import productClass
+=======
+from billing import BillClass
+from product import productClass
+
+>>>>>>> bf40b3728be4e76f71559d968d3e3d0fad9deb86
 class IMS:
     def __init__(self,root):
         self.root=root
@@ -88,6 +94,9 @@ class IMS:
         self.new_win=Toplevel(self.root)
         self.new_obj=salesClass(self.new_win)     
 
+    def billing(self):
+        self.new_win=Toplevel(self.root)
+        self.new_obj=BillClass(self.new_win)
 
 
 if __name__=="__main__":
