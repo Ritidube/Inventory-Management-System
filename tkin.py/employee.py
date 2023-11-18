@@ -301,10 +301,12 @@ class employeeClass:
                         self. EmployeeTable.insert('', END, values=row)
                 else:
                     messagebox.showerror("Error","No record found!!!",parent=self.root)
+        except Exception as ex:
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
 
 
 if __name__=="__main__":
     root=Tk()
     obj=employeeClass(root)
-    root.mainloop()        
+    root.mainloop()    
