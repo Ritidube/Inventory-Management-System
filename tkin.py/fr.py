@@ -3,11 +3,11 @@ from PIL import Image,ImageTk
 from employee import employeeClass
 from supplier import supplierClass
 from category import categoryClass
-<<<<<<< HEAD
+
 from sales import salesClass
-=======
+from billing import BillClass
 from product import productClass
->>>>>>> f8b083f65bdf791820f93f680a7ff331d0fce968
+
 class IMS:
     def __init__(self,root):
         self.root=root
@@ -90,6 +90,9 @@ class IMS:
         self.new_win=Toplevel(self.root)
         self.new_obj=salesClass(self.new_win)     
 
+    def billing(self):
+        self.new_win=Toplevel(self.root)
+        self.new_obj=BillClass(self.new_win)
 
 
 if __name__=="__main__":
