@@ -142,11 +142,10 @@ class employeeClass:
         self.EmployeeTable.column("utype",width=100)
         self.EmployeeTable.column("address",width=100)
         self.EmployeeTable.column("salary",width=100)
-       
-        
-        
         
         self.EmployeeTable.pack(fill=BOTH,expand=1)
+
+        self.show
 #==========================================================
     def add(self):
         con=sqlite3.connect(database=r'ims.db')
@@ -162,18 +161,33 @@ class employeeClass:
                 else:
                     cur.execute("Insert into employee (eid,name,email,gender,contact,dob,doj,pass,utype,address,salary) values(?,?,?,?,?,?,?,?,?,?,?)",(
                                                 self.var_emp_id.get(),    #stringvar is taken for database mai koi error na aaye
+                                                self.var_name.get(),
+                                                self.var_email.get(),
                                                 self.var_gender.get(),
                                                 self.var_contact.get(),
-                                                self.var_name.get(),
                                                 self.var_dob.get(),
                                                 self.var_doj.get(),
-                                                self.var_email.get(),
                                                 self.var_pass.get(),
                                                 self.var_utype.get(),
+                                                self.txt_address.get('1.0', END),
                                                 self.var_salary.get(),
-                                                self.var_address.get()
                                     
                     ))
+                    con.commit()
+                    messagebox.showinfo("Success", "Employee Addedd Successfully",parent= self.root)
+                    self.show
+        except Exception as ex:
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
+
+    def show (self):
+        con=sqlite3.connect (database=r'ims.db')
+        cur=con.cursor()
+        try:
+            cur.execute("select * from employee")
+            rows=cur.fetchall()
+            self.EmployeeTable.delete(*self.EmployeeTable.get_children())
+            for row in rows:
+                self.EmployeeTable.insert('',END,values=row)
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
