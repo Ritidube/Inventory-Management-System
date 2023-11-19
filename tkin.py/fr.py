@@ -3,15 +3,11 @@ from PIL import Image,ImageTk
 from employee import employeeClass
 from supplier import supplierClass
 from category import categoryClass
-
 from sales import salesClass
-<<<<<<< HEAD
 from product import productClass
-=======
 from billing import BillClass
 from product import productClass
-
->>>>>>> bf40b3728be4e76f71559d968d3e3d0fad9deb86
+import os
 class IMS:
     def __init__(self,root):
         self.root=root
@@ -25,7 +21,7 @@ class IMS:
         title=Label(self.root,text="Invntory Managemen System",image=self.icon_title,compound=LEFT,font=("times new roman",40,"bold"),bg="#010c48",fg="white",anchor="w",padx=20).place(x=0,y=0,relwidth=1,height=70)
 
         #button__logout
-        btn_logout=Button(self.root,text="Logout",font=("times new roman",15,"bold"),bg="yellow",cursor="hand2").place(x=1150,y=10,height=50,width=150)
+        btn_logout=Button(self.root,text="Logout",command=self.logout,font=("times new roman",15,"bold"),bg="yellow",cursor="hand2").place(x=1150,y=10,height=50,width=150)
         #welcomemsg__clock__date
         self.lbl_clock=Label(self.root,text="Welcome to Inventory Management System\t\t Date: DD-MM-YYYY\t\t Time: HH:MM:SS",font=("times new roman",15),bg="#4D636D",fg="white")
         self.lbl_clock.place(x=0,y=70,relwidth=1,height=30)
@@ -97,7 +93,9 @@ class IMS:
     def billing(self):
         self.new_win=Toplevel(self.root)
         self.new_obj=BillClass(self.new_win)
-
+    def logout(self):
+        self.root.destroy()
+        os.system("python tkin.py/login.py")
 
 if __name__=="__main__":
     root=Tk()
