@@ -122,7 +122,7 @@ class productClass:
         con=sqlite3.connect(database=r'ims.db')
         cur=con.cursor()
         try:
-            cur.execute("Select * from category")
+            cur.execute("Select name from category")
             cat=cur.fetchall()
             
             if len(cat)>0:
@@ -131,13 +131,13 @@ class productClass:
                 for i in cat:
                     self.cat_list.append(i[0])
             
-            cur.execute("Select * from supplier")
+            cur.execute("Select name from supplier")
             sup=cur.fetchall()
             if len(sup)>0:
                 del self.sup_list[:]
                 self.sup_list.append("Select")
-                for i in cat:
-                    self.cat_list.append(i[0])
+                for i in sup:
+                    self.sup_list.append(i[0])
 
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
@@ -192,13 +192,13 @@ class productClass:
         f=self.product_table.focus ()
         content=(self.product_table.item (f)) 
         row=content [ 'values']
-        self.var_cat.set(row[1])
+        self.var_cat.set(row[2])
         
-        self.var_sup.set(row[2])
-        self. var_name.set(row[3])
+        self.var_sup.set(row[1])
+        self.var_name.set(row[3])
         self.var_price.set(row[4])
-        self. var_qty.set(row[5])
-        self. var_status.set(row[6])                                      
+        self.var_qty.set(row[5])
+        self.var_status.set(row[6])                                      
        
     
     def update(self):
