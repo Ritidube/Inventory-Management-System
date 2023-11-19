@@ -213,7 +213,7 @@ class productClass:
                 if row==None:
                     messagebox.showerror("Error","Invalid Product ID",parent=self.root )
                 else:
-                    cur.execute("Update employee set Caategory=?,Supplier=?,name=?,price=?,qty=?,status=? where pid=?",(
+                    cur.execute("Update product set Category=?,Supplier=?,name=?,price=?,qty=?,status=? where pid=?",(
                                                 self.var_cat.get(),
                                                 self.var_sup.get(),
                                                 self. var_name.get(),
