@@ -189,12 +189,12 @@ class productClass:
 
 
     def get_data(self,ev):
-        f=self. EmployeeTable.focus ()
+        f=self.product_table.focus ()
         content=(self.product_table.item (f)) 
         row=content [ 'values']
-        self.var_cat.set(row[2])
-        self.var_pid.set(row[0])
-        self.var_sup.set(row[1])
+        self.var_cat.set(row[1])
+        
+        self.var_sup.set(row[2])
         self. var_name.set(row[3])
         self.var_price.set(row[4])
         self. var_qty.set(row[5])
@@ -208,7 +208,7 @@ class productClass:
             if self.var_pid.get()=="":
                 messagebox.showerror("Error","Please select product from list",parent=self.root)
             else:
-                cur.execute("Select * from employee where eid=?",(self.var_emp_id.get(),))
+                cur.execute("Select * from product where pid=?",(self.var_pid.get(),))
                 row=cur.fetchone()
                 if row==None:
                     messagebox.showerror("Error","Invalid Product ID",parent=self.root )
