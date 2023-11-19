@@ -8,9 +8,9 @@ class Login_System:
         self.root=root
         self.root.title("Login System | Developed By Struggling with bits")
         self.root.geometry("1350x700+0+0")
-        self.root.config(bg="#fafafa")
+        self.root.config(bg="cyan")
         #----------images-----------
-        self.phone_image =ImageTk.PhotoImage(file='tkin.py/Images/Logo.png')
+        self.phone_image =ImageTk.PhotoImage(file='tkin.py/Images/login.jpg')
         self.lbl_Phone_image=Label(self.root,image=self.phone_image,bd=0).place(x=200,y=50)
 
         #====================Login_Frame==============

@@ -14,7 +14,7 @@ class BillClass:
        # orignal_image=Image.open("Inventory-Management-System/tkin.py/Images/Logo.png")
         #resized_image=orignal_image.resize((150, 70))
 
-        orignal_image=Image.open("Inventory-Management-System/tkin.py/Images/Logo.png")
+        orignal_image=Image.open("tkin.py/Images/Logo.png")
         resized_image=orignal_image.resize((80, 60))
 
         self.icon_title=ImageTk.PhotoImage(resized_image)

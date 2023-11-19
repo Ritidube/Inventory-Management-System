@@ -59,9 +59,9 @@ class productClass:
 
 #----------button------
         btn_save=Button(product_Frame,text="Save",command=self.add,font=("goudy old style",15),bg='#2196f3',fg="white",cursor="hand2").place(x=10,y=400,width=100,height=40)
-        btn_update=Button(product_Frame,text="Update",font=("goudy old style",15),bg='#4caf50',fg="white",cursor="hand2").place(x=120,y=400,width=100,height=40)
-        btn_delete=Button(product_Frame,text="Delete",font=("goudy old style",15),bg='#f44336',fg="white",cursor="hand2").place(x=230,y=400,width=100,height=40)
-        btn_clear=Button(product_Frame,text="Clear",font=("goudy old style",15),bg='#607d8b',fg="white",cursor="hand2").place(x=340,y=400,width=100,height=40)
+        btn_update=Button(product_Frame,text="Update",command=self.update,font=("goudy old style",15),bg='#4caf50',fg="white",cursor="hand2").place(x=120,y=400,width=100,height=40)
+        btn_delete=Button(product_Frame,text="Delete",command=self.delete,font=("goudy old style",15),bg='#f44336',fg="white",cursor="hand2").place(x=230,y=400,width=100,height=40)
+        btn_clear=Button(product_Frame,text="Clear",command=self.clear,font=("goudy old style",15),bg='#607d8b',fg="white",cursor="hand2").place(x=340,y=400,width=100,height=40)
       
 #------search frame-------
         SearchFrame=LabelFrame(self.root,text="Search Product",font=("goudy old style",12,"bold"),bd=2,relief=RIDGE,bg="white")
@@ -122,7 +122,7 @@ class productClass:
         con=sqlite3.connect(database=r'ims.db')
         cur=con.cursor()
         try:
-            cur.execute("Select * from category")
+            cur.execute("Select name from category")
             cat=cur.fetchall()
             
             if len(cat)>0:
@@ -131,13 +131,13 @@ class productClass:
                 for i in cat:
                     self.cat_list.append(i[0])
             
-            cur.execute("Select * from supplier")
+            cur.execute("Select name from supplier")
             sup=cur.fetchall()
             if len(sup)>0:
                 del self.sup_list[:]
                 self.sup_list.append("Select")
-                for i in cat:
-                    self.cat_list.append(i[0])
+                for i in sup:
+                    self.sup_list.append(i[0])
 
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
@@ -193,12 +193,12 @@ class productClass:
         content=(self.product_table.item (f)) 
         row=content [ 'values']
         self.var_cat.set(row[2])
-        self.var_pid.set(row[0])
+        
         self.var_sup.set(row[1])
-        self. var_name.set(row[3])
+        self.var_name.set(row[3])
         self.var_price.set(row[4])
-        self. var_qty.set(row[5])
-        self. var_status.set(row[6])                                      
+        self.var_qty.set(row[5])
+        self.var_status.set(row[6])                                      
        
     
     def update(self):
@@ -208,12 +208,12 @@ class productClass:
             if self.var_pid.get()=="":
                 messagebox.showerror("Error","Please select product from list",parent=self.root)
             else:
-                cur.execute("Select * from employee where eid=?",(self.var_emp_id.get(),))
+                cur.execute("Select * from product where pid=?",(self.var_pid.get(),))
                 row=cur.fetchone()
                 if row==None:
                     messagebox.showerror("Error","Invalid Product ID",parent=self.root )
                 else:
-                    cur.execute("Update employee set Caategory=?,Supplier=?,name=?,price=?,qty=?,status=? where pid=?",(
+                    cur.execute("Update product set Category=?,Supplier=?,name=?,price=?,qty=?,status=? where pid=?",(
                                                 self.var_cat.get(),
                                                 self.var_sup.get(),
                                                 self. var_name.get(),
