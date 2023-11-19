@@ -1,6 +1,7 @@
 from tkinter import*
 from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
+import os
 class BillClass:
     def __init__(self,root):
         self.root=root
@@ -8,13 +9,18 @@ class BillClass:
         self.root.title("Inventory Management System | Developed by Struggling with bits")
         self.root.config(bg="white")
         #headingtitle
+
+       # orignal_image=Image.open("Inventory-Management-System/tkin.py/Images/Logo.png")
+        #resized_image=orignal_image.resize((150, 70))
+
         orignal_image=Image.open("Inventory-Management-System/tkin.py/Images/Logo.png")
         resized_image=orignal_image.resize((80, 60))
+
         self.icon_title=ImageTk.PhotoImage(resized_image)
         title=Label(self.root,text="Inventory Managemen System",image=self.icon_title,compound=LEFT,font=("times new roman",40,"bold"),bg="#010c48",fg="white",anchor="w",padx=20).place(x=0,y=0,relwidth=1,height=70)
 
         #button__logout
-        btn_logout=Button(self.root,text="Logout",font=("times new roman",15,"bold"),bg="yellow",cursor="hand2").place(x=1150,y=10,height=50,width=150)
+        btn_logout=Button(self.root,text="Logout",command=self.logout,font=("times new roman",15,"bold"),bg="yellow",cursor="hand2").place(x=1150,y=10,height=50,width=150)
         #welcomemsg__clock__date
         self.lbl_clock=Label(self.root,text="Welcome to Inventory Management System\t\t Date: DD-MM-YYYY\t\t Time: HH:MM:SS",font=("times new roman",15),bg="#4D636D",fg="white")
         self.lbl_clock.place(x=0,y=70,relwidth=1,height=30)
@@ -64,6 +70,9 @@ class BillClass:
         self.product_Table.pack(fill=BOTH,expand=1)
         #self.product_Table.bind("<ButtonRelease-1>",self.get_data)
         lbl_note=Label(ProductFrame1,text="Note: 'Enter 0 Quantity to remove product from the Cart'",font=("goundy old style",12),anchor='w',bg="white",fg="red").pack(side=BOTTOM,fill=X)
+
+
+
         #======Customer Frame===
         self.var_cname=StringVar()
         self.var_contact=StringVar()
@@ -224,6 +233,10 @@ class BillClass:
     def perform_cal(self):
         result=self.var_cal_input.get()
         self.var_cal_input.set(eval(result))
+    def logout(self):
+        self.root.destroy()
+        os.system("python tkin.py/login.py")
+
 
 if __name__=="__main__":
     root=Tk()

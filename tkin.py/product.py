@@ -13,8 +13,14 @@ class productClass:
         self.var_searchby=StringVar()
         self.var_searchtxt=StringVar()
 
+        self.var_pid=StringVar()
         self.var_cat=StringVar()
         self.var_sup=StringVar()
+        self.cat_list=[]
+        self.sup_list=[]
+        self.fetch_cat_sup()
+
+
         self.var_name=StringVar()
         self.var_price=StringVar()
         self.var_qty=StringVar()
@@ -35,11 +41,11 @@ class productClass:
         lbl_status=Label(product_Frame,text="Status",font=("goudy old style",20),bg="white").place(x=30,y=310)
 
     #-----column2----
-        cmb_cat=ttk.Combobox(product_Frame,textvariable=self.var_cat,values=("Select"),state='readonly',justify=CENTER,font=("goudy old style",15))
+        cmb_cat=ttk.Combobox(product_Frame,textvariable=self.var_cat,values=self.cat_list,state='readonly',justify=CENTER,font=("goudy old style",15))
         cmb_cat.place(x=150,y=60,width=200)
         cmb_cat.current(0)
 
-        cmb_sup=ttk.Combobox(product_Frame,textvariable=self.var_sup,values=("Select"),state='readonly',justify=CENTER,font=("goudy old style",15))
+        cmb_sup=ttk.Combobox(product_Frame,textvariable=self.var_sup,values=self.sup_list,state='readonly',justify=CENTER,font=("goudy old style",15))
         cmb_sup.place(x=150,y=110,width=200)
         cmb_sup.current(0)
 
@@ -58,7 +64,7 @@ class productClass:
         btn_clear=Button(product_Frame,text="Clear",font=("goudy old style",15),bg='#607d8b',fg="white",cursor="hand2").place(x=340,y=400,width=100,height=40)
       
 #------search frame-------
-        SearchFrame=LabelFrame(self.root,text="Search Employee",font=("goudy old style",12,"bold"),bd=2,relief=RIDGE,bg="white")
+        SearchFrame=LabelFrame(self.root,text="Search Product",font=("goudy old style",12,"bold"),bd=2,relief=RIDGE,bg="white")
         SearchFrame.place(x=480,y=10,width=600,height=80)
 
 #-----option----
@@ -69,88 +75,109 @@ class productClass:
         txt_search=Entry(SearchFrame,textvariable=self.var_searchtxt,font=("goudy old style",15),bg='lightyellow').place(x=200,y=10)
         btn_search=Button(SearchFrame,text="Search",command=self.search,font=("goudy old style",15),bg='#4caf50',fg="white",cursor="hand2").place(x=410,y=9,width=150,height=30)
 
-#-----Employee Details-----
+#-----Product Details-----
 
         
-        p_frame=Frame(self.root,bd=3,relief=RIDGE)
-        p_frame.place(x=0,y=350,relwidth=1,height=150)
+        p_frame=Frame(self.root,bd=3,relief=RIDGE,bg="magenta")
+        p_frame.place(x=480,y=100,width=600,height=390)
 
         scrolly=Scrollbar(p_frame,orient=VERTICAL)
         scrollx=Scrollbar(p_frame,orient=HORIZONTAL)
 
 
-        self.product_table=ttk.Treeview(emp_frame,columns=("eid","name","email","gender","contact","dob","doj","pass","utype","address","salary"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
+        self.product_table=ttk.Treeview(p_frame,columns=("pid","Supplier","Category","name","price","qty","status"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
         scrollx.pack(side=BOTTOM,fill=X)
         scrolly.pack(side=RIGHT,fill=Y)
         scrollx.config(command=self.product_table.xview)
         scrolly.config(command=self.product_table.yview)
-        self.product_table.heading("eid",text="Emp ID")
+        self.product_table.heading("pid",text="Product ID")
+        self.product_table.heading("Category",text="Category")
+        self.product_table.heading("Supplier",text="Supplier")
         self.product_table.heading("name",text="Name")
-        self.product_table.heading("email",text="Email")
-        self.product_table.heading("gender",text="Gender")
-        self.product_table.heading("contact",text="Contact")
-        self.product_table.heading("dob",text="D.O.B")
-        self.product_table.heading("doj",text="D.O.J")
-        self.product_table.heading("pass",text="Password")
-        self.product_table.heading("utype",text="User Type")
-        self.product_table.heading("address",text="Address")
-        self.product_table.heading("salary",text="Salary")
+        self.product_table.heading("price",text="Price")
+        self.product_table.heading("qty",text="Quantity")
+        self.product_table.heading("status",text="Status")
+        
        
         self.product_table["show"]="headings"
        
-        self.product_table.column("eid",width=90)
+        self.product_table.column("pid",width=90)
+        self.product_table.column("Category",width=100)
+        self.product_table.column("Supplier",width=100)
         self.product_table.column("name",width=100)
-        self.product_table.column("email",width=100)
-        self.product_table.column("gender",width=100)
-        self.product_table.column("contact",width=100)
-        self.product_table.column("dob",width=100)
-        self.product_table.column("doj",width=100)
-        self.product_table.column("pass",width=100)
-        self.product_table.column("utype",width=100)
-        self.product_table.column("address",width=100)
-        self.product_table.column("salary",width=100)
+        self.product_table.column("price",width=100)
+        self.product_table.column("qty",width=100)
+        self.product_table.column("status",width=100)
         self.product_table.pack(fill=BOTH,expand=1)
         self.product_table.bind("<ButtonRelease-1>",self.get_data)
 
         self.show()
+        
+
 #==========================================================
+
+    def fetch_cat_sup(self):
+        self.cat_list.append("Empty")
+        self.sup_list.append("Empty")
+        con=sqlite3.connect(database=r'ims.db')
+        cur=con.cursor()
+        try:
+            cur.execute("Select * from category")
+            cat=cur.fetchall()
+            
+            if len(cat)>0:
+                del self.cat_list[:]
+                self.cat_list.append("Select")
+                for i in cat:
+                    self.cat_list.append(i[0])
+            
+            cur.execute("Select * from supplier")
+            sup=cur.fetchall()
+            if len(sup)>0:
+                del self.sup_list[:]
+                self.sup_list.append("Select")
+                for i in cat:
+                    self.cat_list.append(i[0])
+
+        except Exception as ex:
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
+    
+
+
     def add(self):
         con=sqlite3.connect(database=r'ims.db')
         cur=con.cursor()
         try:
-            if self.var_emp_id.get()=="":
-                messagebox.showerror("Error","Employee ID Must be required",parent=self.root)
+            if self.var_cat.get()=="Select" or self.var_cat.get()=="Empty" or self.var_sup.get()=="Select" or self.var_name.get()=="":
+                messagebox.showerror("Error","All fields are required",parent=self.root)
             else:
-                cur.execute("Select * from employee where eid=?",(self.var_emp_id.get(),))
+                cur.execute("Select * from product where name=? ",(self.var_name.get(),))
                 row=cur.fetchone()
                 if row!=None:
-                    messagebox.showerror("Error","This Employee ID already assigned, try different",parent=self.root )
+                    messagebox.showerror("Error","Product already present, try different",parent=self.root )
                 else:
-                    cur.execute("Insert into employee (eid,name,email,gender,contact,dob,doj,pass,utype,address,salary) values(?,?,?,?,?,?,?,?,?,?,?)",(
-                                                self.var_emp_id.get(),    #stringvar is taken for database mai koi error na aaye
-                                                self.var_name.get(),
-                                                self.var_email.get(),
-                                                self.var_gender.get(),
-                                                self.var_contact.get(),
-                                                self.var_dob.get(),
-                                                self.var_doj.get(),
-                                                self.var_pass.get(),
-                                                self.var_utype.get(),
-                                                self.txt_address.get('1.0', END),
-                                                self.var_salary.get(),
+                    cur.execute("Insert into product (Category,Supplier,name,price,qty,status) values(?,?,?,?,?,?)",(
+                                                self.var_cat.get(),
+                                                self.var_sup.get(),
+                                                self. var_name.get(),
+                                                self.var_price.get(),
+                                                self. var_qty.get(),
+                                                self. var_status.get(),
                                     
                     ))
                     con.commit()
-                    messagebox.showinfo("Success", "Employee Addedd Successfully",parent= self.root)
+                    messagebox.showinfo("Success", "Product Addedd Successfully",parent= self.root)
                     self.show()
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
+
+
 
     def show (self):
         con=sqlite3.connect (database=r'ims.db')
         cur=con.cursor()
         try:
-            cur.execute("select * from employee")
+            cur.execute("select * from product")
             rows=cur.fetchall()
             self.product_table.delete(*self.product_table.get_children())
             for row in rows:
@@ -158,93 +185,91 @@ class productClass:
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
     
+
+
+
     def get_data(self,ev):
         f=self. EmployeeTable.focus ()
         content=(self.product_table.item (f)) 
         row=content [ 'values']
-       # print (row)
-        self.var_emp_id.set(row[0])
-        self.var_name.set(row[1])
-        self.var_email.set(row[2])
-        self.var_gender.set(row[3])
-        self.var_contact.set(row[4])
-        self.var_dob.set(row [5])
-        self.var_doj.set(row[6])
-        self.var_pass.set(row[7])
-        self.var_utype.set(row[8])
-        self.txt_address.delete('1.0',END)
-        self.txt_address.insert (END,row[9])
-        self.var_salary.set(row[10])
+        self.var_cat.set(row[2])
+        self.var_pid.set(row[0])
+        self.var_sup.set(row[1])
+        self. var_name.set(row[3])
+        self.var_price.set(row[4])
+        self. var_qty.set(row[5])
+        self. var_status.set(row[6])                                      
+       
     
     def update(self):
         con=sqlite3.connect(database=r'ims.db')
         cur=con.cursor()
         try:
-            if self.var_emp_id.get()=="":
-                messagebox.showerror("Error","Employee ID Must be required",parent=self.root)
+            if self.var_pid.get()=="":
+                messagebox.showerror("Error","Please select product from list",parent=self.root)
             else:
                 cur.execute("Select * from employee where eid=?",(self.var_emp_id.get(),))
                 row=cur.fetchone()
                 if row==None:
-                    messagebox.showerror("Error","Invalid Employee ID",parent=self.root )
+                    messagebox.showerror("Error","Invalid Product ID",parent=self.root )
                 else:
-                    cur.execute("Update employee set name=?,email=?,gender=?,contact=?,dob=?,doj=?,pass=?,utype=?,address=?,salary=? where eid=?",(
-                                                self.var_name.get(),
-                                                self.var_email.get(),
-                                                self.var_gender.get(),
-                                                self.var_contact.get(),
-                                                self.var_dob.get(),
-                                                self.var_doj.get(),
-                                                self.var_pass.get(),
-                                                self.var_utype.get(),
-                                                self.txt_address.get('1.0', END),
-                                                self.var_salary.get(),
-                                                self.var_emp_id.get(),
+                    cur.execute("Update employee set Caategory=?,Supplier=?,name=?,price=?,qty=?,status=? where pid=?",(
+                                                self.var_cat.get(),
+                                                self.var_sup.get(),
+                                                self. var_name.get(),
+                                                self.var_price.get(),
+                                                self. var_qty.get(),
+                                                self. var_status.get(),
+                                                self.var_pid.get()
                     ))
                     con.commit()
-                    messagebox.showinfo("Success", "Employee Updated Successfully",parent= self.root)
+                    messagebox.showinfo("Success", "Product Updated Successfully",parent= self.root)
                     self.show()
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
+
+
 
     def delete(self):
         con=sqlite3.connect(database=r'ims.db')
         cur=con.cursor()
         try:
-            if self.var_emp_id.get()=="":
-                messagebox.showerror("Error","Employee ID Must be required",parent=self.root)
+            if self.var_pid.get()=="":
+                messagebox.showerror("Error","Select Product from the List",parent=self.root)
             else:
-                cur.execute("Select * from employee where eid=?",(self.var_emp_id.get(),))
+                cur.execute("Select * from product where pid=?",(self.var_pid.get(),))
                 row=cur.fetchone()
                 if row==None:
-                    messagebox.showerror("Error","Invalid Employee ID",parent=self.root )
+                    messagebox.showerror("Error","Invalid Product ",parent=self.root )
                 else:
                     op=messagebox.askyesno("Confirm","Do you really want to delete?",parent=self.root)
                     if op==True:
-                        cur.execute("delete from employee where eid=?",(self.var_emp_id.get(),))
+                        cur.execute("delete from product where pid=?",(self.var_pid.get(),))
                         con.commit()
-                        messagebox.showinfo("Delete","Employee Deleted Successfully",parent=self.root)
+                        messagebox.showinfo("Delete","Product Deleted Successfully",parent=self.root)
                         self.clear()
 
 
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
+
+
+
     def clear(self):
-        self.var_emp_id.set("")
-        self.var_name.set("")
-        self.var_email.set("")
-        self.var_gender.set("Select")
-        self. var_contact.set("")
-        self.var_dob.set("")
-        self.var_doj.set("")
-        self.var_pass.set("") 
-        self.var_utype.set("Admin")
-        self.txt_address.delete('1.0', END)
-        self.var_salary.set("")
+        self.var_cat.set("Select"),
+        self.var_sup.set("Select"),
+        self. var_name.set(""),
+        self.var_price.set(""),
+        self. var_qty.set(""),
+        self. var_status.set("Active"),
+        self.var_pid.set("")   
+
         self.var_searchtxt.set("")
         self.var_searchby.set("Select")
         self.show()
+
+
 
     def search (self):
         con=sqlite3.connect(database=r'ims.db')
@@ -256,12 +281,12 @@ class productClass:
                 messagebox.showerror("Error","Search input should be required",parent=self.root)
         
             else:
-                cur.execute("select * from employee where "+self.var_searchby.get()+" LIKE '%"+self.var_searchtxt.get()+"%'")
+                cur.execute("select * from product where "+self.var_searchby.get()+" LIKE '%"+self.var_searchtxt.get()+"%'")
                 rows=cur.fetchall()
                 if len(rows)!=0:
                     self.product_table.delete(*self.product_table.get_children())
                     for row in rows:
-                        self. EmployeeTable.insert('', END, values=row)
+                        self.product_table.insert('', END, values=row)
                 else:
                     messagebox.showerror("Error","No record found!!!",parent=self.root)
         except Exception as ex:
