@@ -9,6 +9,7 @@ class BillClass:
         self.root.geometry("1350x700+0+0")
         self.root.title("Inventory Management System | Developed by Struggling with bits")
         self.root.config(bg="white")
+        self.cart_list=[]
         #headingtitle
 
        # orignal_image=Image.open("Inventory-Management-System/tkin.py/Images/Logo.png")
@@ -42,7 +43,7 @@ class BillClass:
         lbl_search=Label(ProductFrame2,text="Product Name",font=("times new roman",15,"bold"),bg="white").place(x=2,y=45)
         txt_search=Entry(ProductFrame2,textvariable=self.var_search,font=("times new roman",15),bg="lightyellow").place(x=128,y=47,width=150,height=22)
         btn_search=Button(ProductFrame2,text="Search",command=self.search,font=("goudy old style",15),bg="#2196f3",fg="white",cursor="hand2").place(x=285,y=45,width=100,height=25)
-        btn_show_all=Button(ProductFrame2,text="Show All",font=("goudy old style",15),bg="#083531",fg="white",cursor="hand2").place(x=285,y=10,width=100,height=25)
+        btn_show_all=Button(ProductFrame2,text="Show All",command=self.show,font=("goudy old style",15),bg="#083531",fg="white",cursor="hand2").place(x=285,y=10,width=100,height=25)
         #========product Detail Frame=========
         ProductFrame3=Frame(ProductFrame1,bd=3,relief=RIDGE)
         ProductFrame3.place(x=2,y=148,width=398, height=375)
@@ -70,7 +71,7 @@ class BillClass:
         self.product_Table.column("qty",width=40)
         self.product_Table.column("status",width=100)
         self.product_Table.pack(fill=BOTH,expand=1)
-        #self.product_Table.bind("<ButtonRelease-1>",self.get_data)
+        self.product_Table.bind("<ButtonRelease-1>",self.get_data)
         lbl_note=Label(ProductFrame1,text="Note: 'Enter 0 Quantity to remove product from the Cart'",font=("goundy old style",12),anchor='w',bg="white",fg="red").pack(side=BOTTOM,fill=X)
 
 
@@ -130,7 +131,8 @@ class BillClass:
         #=== Cart Frame=======
         cart_Frame=Frame(Cal_Cart_Frame,bd=3,relief=RIDGE)
         cart_Frame.place(x=280,y=8,width=245,height=342)
-        cartTitle=Label(cart_Frame,text="Cart \t Total Product: [0]",font=("goudy old style",15),bg="lightgray").pack(side=TOP,fill=X)
+        self.cartTitle=Label(cart_Frame,text="Cart \t Total Product: [0]",font=("goudy old style",15),bg="lightgray")
+        self.cartTitle.pack(side=TOP,fill=X)
 
 
 
@@ -178,11 +180,11 @@ class BillClass:
         lbl_p_qty=Label(Add_CartWidgetsFrame,text="Quantity",font=("times new roman",15),bg="white").place(x=390,y=5)
         txt_p_qty=Entry(Add_CartWidgetsFrame,textvariable=self.var_qty,font=("times new roman",15),bg="lightyellow",).place(x=390,y=35,width=100,height=22)
 
-        self.lbl_instock=Label(Add_CartWidgetsFrame,text="In Stock [9999]",font=("times new roman",15),bg="white")
-        self.lbl_instock.place(x=5,y=70)
+        self.lbl_inStock=Label(Add_CartWidgetsFrame,text="In Stock",font=("times new roman",15),bg="white")
+        self.lbl_inStock.place(x=5,y=70)
 
         btn_clear_cart=Button(Add_CartWidgetsFrame,text="Clear",font=("times new roman",15,"bold"),bg="lightgray",cursor="hand2").place(x=180,y=70,width=150,height=30)
-        btn_add_cart=Button(Add_CartWidgetsFrame,text="Add | Update Cart",font=("times new roman",15,"bold"),bg="orange",cursor="hand2").place(x=340,y=70,width=180,height=30)
+        btn_add_cart=Button(Add_CartWidgetsFrame,command=self.add_update_cart,text="Add | Update Cart",font=("times new roman",15,"bold"),bg="orange",cursor="hand2").place(x=340,y=70,width=180,height=30)
 #===========billing area================= 
         billFrame=Frame(self.root,bd=2,relief=RIDGE,bg='white')
         billFrame.place(x=953,y=110,width=410,height=410)
@@ -242,7 +244,7 @@ class BillClass:
         con=sqlite3.connect (database=r'ims.db')
         cur=con.cursor()
         try:
-            cur.execute("select pid,name,price,qty,status from product")
+            cur.execute("select pid,name,price,qty,status from product where status='Active'")
             rows=cur.fetchall()
             self.product_Table.delete(*self.product_Table.get_children())
             for row in rows:
@@ -255,19 +257,82 @@ class BillClass:
         cur=con.cursor()
         try:
             if self.var_search.get()=="":
-                messagebox.showerror("Error","Select Search By option", parent=self.root)
+                messagebox.showerror("Error","Search input should be required",parent=self.root)
 
             else:
-                cur.execute("select pid,name,price,qty,status from product where name LIKE '%"+self.var_searchtxt.get()+"%'")
+                cur.execute("select pid,name,price,qty,status from product where name LIKE '%"+self.var_search.get()+"%' and status='Active'")
                 rows=cur.fetchall()
                 if len(rows)!=0:
-                    self.product_table.delete(*self.product_table.get_children())
+                    self.product_Table.delete(*self.product_Table.get_children())
                     for row in rows:
-                        self.product_table.insert('', END, values=row)
+                        self.product_Table.insert('', END, values=row)
                 else:
                     messagebox.showerror("Error","No record found!!!",parent=self.root)
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
+
+    def get_data(self,ev):
+        f=self.product_Table.focus ()
+        content=(self.product_Table.item(f)) 
+        row=content ['values']
+        self.var_pid.set(row[0])
+        self.var_pname.set(row[1])
+        self.var_price.set(row[2])
+        self.lbl_inStock.config(text=f"In Stock [{str(row[3])}]")
+
+    def add_update_cart(self):
+        if self.var_pid.get()=='':
+            messagebox.showerror('Error',"Please select product from the list",parent=self.root)
+        elif self.var_qty.get()=='': 
+            messagebox.showerror('Error',"Quantity is Required",parent=self.root)
+        else:
+            price_cal=int(self.var_qty.get())*float(self.var_price.get())
+            price_cal=float(price_cal)
+            cart_data=[self.var_pid.get(),self.var_pname.get(),price_cal,self.var_qty.get()]
+           # self.cart_list.append(cart_data)
+           #======================update cart===============
+            present='no'
+            index_=0
+            for row in self.cart_list:
+                if self.var_pid.get()==row[0]:
+                    present='yes'
+                    break
+                index_+=1
+            if present=='yes':
+                op=messagebox.askyesno('Confirm',"Product already\nDo you want to Update| Remove from the Cart List",parent=self.root)
+                if op==True:
+                    if self.var_qty.get()=="0":
+                        self.cart_list.pop(index_)
+                    else:
+                        self.cart_list[index_][2]=price_cal
+                        self.cart_list[index_][3]=self.var_qty.get()
+            else:
+                self.cart_list.append(cart_data)
+            self.show_cart()
+            self.bill_updates()
+
+    def bill_updates(self):
+        bill_amnt=0
+        net_pay=0
+        for row in self.cart_list:
+            bill_amnt=bill_amnt+float(row[2])
+        net_pay=bill_amnt-((bill_amnt*5)/100)
+        self.lbl_amnt.config(text=f'Bill Amnt.\n{str(bill_amnt)}')
+        self.lbl_net_pay.config(text=f'Net Pay\n{str(net_pay)}')
+        self.cartTitle.config(text=f"Cart \t Total Product: [{str(len(self.cart_list))}]")
+
+   
+   
+   
+   
+    def show_cart(self):
+        try:
+            self.CartTable.delete(*self.CartTable.get_children())
+            for row in self.cart_list:
+                self.CartTable.insert('',END,values=row)
+        except Exception as ex:
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
+    
 
 
     
