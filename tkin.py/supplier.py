@@ -180,7 +180,7 @@ class supplierClass:
                                                 self.var_sup_invoice.get(),
                     ))
                     con.commit()
-                    messagebox.showinfo("Success","Suplier Updated Successfully",parent= self.root)
+                    messagebox.showinfo("Success","Supplier Updated Successfully",parent= self.root)
                     self.show()
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
