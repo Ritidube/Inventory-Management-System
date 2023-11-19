@@ -6,7 +6,7 @@ from category import categoryClass
 from sales import salesClass
 from product import productClass
 from billing import BillClass
-from product import productClass
+
 import os
 class IMS:
     def __init__(self,root):
