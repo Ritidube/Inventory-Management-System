@@ -2,6 +2,7 @@ from tkinter import*
 from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
 import sqlite3
+import os
 class supplierClass:
     def __init__(self,root):
         self.root=root
@@ -64,7 +65,7 @@ class supplierClass:
         self.txt_desc.place(x=180,y=200,width=470,height=120)  
         
     #----------button------
-        btn_save=Button(self.root,text="Save",command=self.add,font=("goudy old style",15),bg='#2196f3',fg="white",cursor="hand2").place(x=180,y=370,width=110,height=35)
+        btn_add=Button(self.root,text="Save",command=self.add,font=("goudy old style",15),bg='#2196f3',fg="white",cursor="hand2").place(x=180,y=370,width=110,height=35)
         btn_update=Button(self.root,text="Update",command=self.update,font=("goudy old style",15),bg='#4caf50',fg="white",cursor="hand2").place(x=300,y=370,width=110,height=35)
         btn_delete=Button(self.root,text="Delete",command=self.delete,font=("goudy old style",15),bg='#f44336',fg="white",cursor="hand2").place(x=420,y=370,width=110,height=35)
         btn_clear=Button(self.root,text="Clear",command=self.clear,font=("goudy old style",15),bg='#607d8b',fg="white",cursor="hand2").place(x=540,y=370,width=110,height=35)
@@ -121,7 +122,7 @@ class supplierClass:
                                                 
                                                 self.var_contact.get(),
                                                 
-                                                self.txt_desc.get('1.0', END),
+                                                self.txt_desc.get('1.0',END),
                                                 
                                     
                     ))
@@ -146,7 +147,7 @@ class supplierClass:
     def get_data(self,ev):
         f=self.supplierTable.focus ()
         content=(self.supplierTable.item (f)) 
-        row=content [ 'values']
+        row=content['values']
        # print (row)
         self.var_sup_invoice.set(row[0])
         self.var_name.set(row[1])
@@ -154,7 +155,7 @@ class supplierClass:
         self.var_contact.set(row[2])
         
         self.txt_desc.delete('1.0',END)
-        self.txt_desc.insert (END,row[3])
+        self.txt_desc.insert(END,row[3])
        
     
     def update(self):
@@ -174,12 +175,12 @@ class supplierClass:
                                                 
                                                 self.var_contact.get(),
                                                 
-                                                self.txt_desc.get('1.0', END),
+                                                self.txt_desc.get('1.0',END),
                                                 
                                                 self.var_sup_invoice.get(),
                     ))
                     con.commit()
-                    messagebox.showinfo("Success", "Suplier Updated Successfully",parent= self.root)
+                    messagebox.showinfo("Success","Suplier Updated Successfully",parent= self.root)
                     self.show()
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
@@ -189,7 +190,7 @@ class supplierClass:
         cur=con.cursor()
         try:
             if self.var_sup_invoice.get()=="":
-                messagebox.showerror("Error","Invoice no. Must be required",parent=self.root)
+                messagebox.showerror("Error","Invoice no. must be required",parent=self.root)
             else:
                 cur.execute("Select * from supplier where invoice=?",(self.var_sup_invoice.get(),))
                 row=cur.fetchone()
@@ -211,7 +212,7 @@ class supplierClass:
         self.var_sup_invoice.set("")
         self.var_name.set("")
         
-        self. var_contact.set("")
+        self.var_contact.set("")
         
         self.txt_desc.delete('1.0', END)
         
@@ -235,7 +236,7 @@ class supplierClass:
                 row=cur.fetchone()
                 if row!=NONE:
                     self.supplierTable.delete(*self.supplierTable.get_children())
-                    self. supplierTable.insert('', END, values=row)
+                    self.supplierTable.insert('', END, values=row)
                 else:
                     messagebox.showerror("Error","No record found!!!",parent=self.root)
         except Exception as ex:
