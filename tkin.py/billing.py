@@ -140,7 +140,7 @@ class BillClass:
         scrollx=Scrollbar(cart_Frame,orient=HORIZONTAL)
 
 
-        self.CartTable=ttk.Treeview(cart_Frame,columns=("pid","name","price","qty","status"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
+        self.CartTable=ttk.Treeview(cart_Frame,columns=("pid","name","price","qty"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
         scrollx.pack(side=BOTTOM,fill=X)
         scrolly.pack(side=RIGHT,fill=Y)
         scrollx.config(command=self.CartTable.xview)
@@ -151,15 +151,13 @@ class BillClass:
         self.CartTable.heading("name",text="Name")
         self.CartTable.heading("price",text="Price")
         self.CartTable.heading("qty",text="QTY")
-        self.CartTable.heading("status",text="Status")
         self.CartTable["show"]="headings"
         self.CartTable.column("pid",width=40)
-        self.CartTable.column("name",width=100)
+        self.CartTable.column("name",width=90)
         self.CartTable.column("price",width=90)
         self.CartTable.column("qty",width=40)
-        self.CartTable.column("status",width=90)
         self.CartTable.pack(fill=BOTH,expand=1)
-        #self.CartTable.bind("<ButtonRelease-1>",self.get_data)
+        self.CartTable.bind("<ButtonRelease-1>",self.get_data_cart)
        
        #===Add Cart Widgets Frame=======
         self.var_pid=StringVar()
@@ -279,16 +277,35 @@ class BillClass:
         self.var_pname.set(row[1])
         self.var_price.set(row[2])
         self.lbl_inStock.config(text=f"In Stock [{str(row[3])}]")
+        self.var_stock.set(row[3])
+        self.var_qty.set('1')
+
+
+    def get_data_cart(self,ev):
+        f=self.CartTable.focus ()
+        content=(self.CartTable.item(f)) 
+        row=content ['values']
+        self.var_pid.set(row[0])
+        self.var_pname.set(row[1])
+        self.var_price.set(row[2])
+        self.lbl_inStock.config(text=f"In Stock [{str(row[4])}]")
+        self.var_stock.set(row[4])
+        self.var_qty.set(row[3])
 
     def add_update_cart(self):
         if self.var_pid.get()=='':
             messagebox.showerror('Error',"Please select product from the list",parent=self.root)
+        elif int(self.var_qty.get())>int(self.var_stock.get()): 
+            messagebox.showerror('Error',"Invalid Quantity",parent=self.root)
         elif self.var_qty.get()=='': 
             messagebox.showerror('Error',"Quantity is Required",parent=self.root)
+        
         else:
-            price_cal=int(self.var_qty.get())*float(self.var_price.get())
-            price_cal=float(price_cal)
-            cart_data=[self.var_pid.get(),self.var_pname.get(),price_cal,self.var_qty.get()]
+           # price_cal=int(self.var_qty.get())*float(self.var_price.get())
+            #price_cal=float(price_cal)
+            price_cal=self.var_price.get()
+          # pid,name,price,qty,stock
+            cart_data=[self.var_pid.get(),self.var_pname.get(),price_cal,self.var_qty.get(),self.var_stock.get()]
            # self.cart_list.append(cart_data)
            #======================update cart===============
             present='no'
@@ -304,7 +321,7 @@ class BillClass:
                     if self.var_qty.get()=="0":
                         self.cart_list.pop(index_)
                     else:
-                        self.cart_list[index_][2]=price_cal
+                       # self.cart_list[index_][2]=price_cal
                         self.cart_list[index_][3]=self.var_qty.get()
             else:
                 self.cart_list.append(cart_data)
@@ -315,7 +332,7 @@ class BillClass:
         bill_amnt=0
         net_pay=0
         for row in self.cart_list:
-            bill_amnt=bill_amnt+float(row[2])
+            bill_amnt=bill_amnt+(float(row[2]))*int(row[3])
         net_pay=bill_amnt-((bill_amnt*5)/100)
         self.lbl_amnt.config(text=f'Bill Amnt.\n{str(bill_amnt)}')
         self.lbl_net_pay.config(text=f'Net Pay\n{str(net_pay)}')
