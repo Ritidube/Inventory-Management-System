@@ -10,8 +10,8 @@ class BillClass:
         self.root.config(bg="white")
         #headingtitle
 
-        orignal_image=Image.open("tkin.py/Images/Logo.png")
-        resized_image=orignal_image.resize((150, 70))
+       # orignal_image=Image.open("Inventory-Management-System/tkin.py/Images/Logo.png")
+        #resized_image=orignal_image.resize((150, 70))
 
         orignal_image=Image.open("Inventory-Management-System/tkin.py/Images/Logo.png")
         resized_image=orignal_image.resize((80, 60))
@@ -73,13 +73,6 @@ class BillClass:
 
 
 
-
-    def logout(self):
-        self.root.destroy()
-        os.system("python tkin.py/login.py")
-
-
-
         #======Customer Frame===
         self.var_cname=StringVar()
         self.var_contact=StringVar()
@@ -98,9 +91,39 @@ class BillClass:
         Cal_Cart_Frame.place(x=420,y=190,width=530,height=360)
         
         #===Calculator Frame=======
-
-        Cal_Frame=Frame(Cal_Cart_Frame,bd=2,relief=RIDGE,bg="white")
+        self.var_cal_input=StringVar()
+        Cal_Frame=Frame(Cal_Cart_Frame,bd=9,relief=RIDGE,bg="white")
         Cal_Frame.place(x=5,y=10,width=268,height=340)
+        
+
+        txt_cal_input=Entry(Cal_Frame,textvariable=self.var_cal_input,font=('arial',15,'bold'),width=21,bd=10,relief=GROOVE,state='readonly',justify=RIGHT)
+        txt_cal_input.grid(row=0,columnspan=4)
+
+        btn_7=Button(Cal_Frame,text='7',font=('arial',15,'bold'),command=lambda:self.get_input(7),bd=5,width=4,pady=10,cursor="hand2").grid(row=1,column=0)
+        btn_8=Button(Cal_Frame,text='8',font=('arial',15,'bold'),command=lambda:self.get_input(8),bd=5,width=4,pady=10,cursor="hand2").grid(row=1,column=1)
+        btn_9=Button(Cal_Frame,text='9',font=('arial',15,'bold'),command=lambda:self.get_input(9),bd=5,width=4,pady=10,cursor="hand2").grid(row=1,column=2)
+        btn_sum=Button(Cal_Frame,text='+',font=('arial',15,'bold'),command=lambda:self.get_input('+'),bd=5,width=4,pady=10,cursor="hand2").grid(row=1,column=3)
+
+
+        btn_4=Button(Cal_Frame,text='4',font=('arial',15,'bold'),command=lambda:self.get_input(4),bd=5,width=4,pady=10,cursor="hand2").grid(row=2,column=0)
+        btn_5=Button(Cal_Frame,text='5',font=('arial',15,'bold'),command=lambda:self.get_input(5),bd=5,width=4,pady=10,cursor="hand2").grid(row=2,column=1)
+        btn_6=Button(Cal_Frame,text='6',font=('arial',15,'bold'),command=lambda:self.get_input(6),bd=5,width=4,pady=10,cursor="hand2").grid(row=2,column=2)
+        btn_sub=Button(Cal_Frame,text='-',font=('arial',15,'bold'),command=lambda:self.get_input('-'),bd=5,width=4,pady=10,cursor="hand2").grid(row=2,column=3)
+
+
+
+        btn_1=Button(Cal_Frame,text='1',font=('arial',15,'bold'),command=lambda:self.get_input(1),bd=5,width=4,pady=10,cursor="hand2").grid(row=3,column=0)
+        btn_2=Button(Cal_Frame,text='2',font=('arial',15,'bold'),command=lambda:self.get_input(2),bd=5,width=4,pady=10,cursor="hand2").grid(row=3,column=1)
+        btn_3=Button(Cal_Frame,text='3',font=('arial',15,'bold'),command=lambda:self.get_input(3),bd=5,width=4,pady=10,cursor="hand2").grid(row=3,column=2)
+        btn_mul=Button(Cal_Frame,text='*',font=('arial',15,'bold'),command=lambda:self.get_input('*'),bd=5,width=4,pady=10,cursor="hand2").grid(row=3,column=3)
+
+
+
+        btn_0=Button(Cal_Frame,text='0',font=('arial',15,'bold'),command=lambda:self.get_input(0),bd=5,width=4,pady=15,cursor="hand2").grid(row=4,column=0)
+        btn_c=Button(Cal_Frame,text='c',font=('arial',15,'bold'),command=self.clear_cal,bd=5,width=4,pady=15,cursor="hand2").grid(row=4,column=1)
+        btn_eq=Button(Cal_Frame,text='=',font=('arial',15,'bold'),command=self.perform_cal,bd=5,width=4,pady=15,cursor="hand2").grid(row=4,column=2)
+        btn_div=Button(Cal_Frame,text='/',font=('arial',15,'bold'),command=lambda:self.get_input("/"),bd=5,width=4,pady=15,cursor="hand2").grid(row=4,column=3)
+
 
         #=== Cart Frame=======
         cart_Frame=Frame(Cal_Cart_Frame,bd=3,relief=RIDGE)
@@ -158,6 +181,62 @@ class BillClass:
 
         btn_clear_cart=Button(Add_CartWidgetsFrame,text="Clear",font=("times new roman",15,"bold"),bg="lightgray",cursor="hand2").place(x=180,y=70,width=150,height=30)
         btn_add_cart=Button(Add_CartWidgetsFrame,text="Add | Update Cart",font=("times new roman",15,"bold"),bg="orange",cursor="hand2").place(x=340,y=70,width=180,height=30)
+#===========billing area================= 
+        billFrame=Frame(self.root,bd=2,relief=RIDGE,bg='white')
+        billFrame.place(x=953,y=110,width=410,height=410)
+        
+        BTitle=Label(billFrame,text="Customer Bill Area",font=("goudy old style",20,"bold"),bg="#262626",fg="white").pack(side=TOP,fill=X)
+        scrolly=Scrollbar(billFrame,orient=VERTICAL)
+        scrolly.pack(side=RIGHT,fill=Y)
+
+
+        self.txt_bill_area=Text(billFrame,yscrollcommand=scrolly.set)
+        self.txt_bill_area.pack(fill=BOTH,expand=1)
+        scrolly.config(command=self.txt_bill_area.yview)
+
+#====================biling buttons============
+        billMenuFrame=Frame(self.root,bd=2,relief=RIDGE,bg='white')
+        billMenuFrame.place(x=953,y=520,width=410,height=140)
+
+        self.lbl_amnt=Label(billMenuFrame,text='Bill Amount\n[0]',font=("goudy old style",15,"bold"),bg="#3f51b5",fg="white")
+        self.lbl_amnt.place(x=2,y=5,width=120,height=70)
+
+        self.lbl_discount=Label(billMenuFrame,text='Discount\n[5%]',font=("goudy old style",15,"bold"),bg="#8bc34a",fg="white")
+        self.lbl_discount.place(x=124,y=5,width=120,height=70)
+
+        self.lbl_net_pay=Label(billMenuFrame,text='Bill Amount\n[0]',font=("goudy old style",15,"bold"),bg="#607d8b",fg="white")
+        self.lbl_net_pay.place(x=246,y=5,width=160,height=70)
+
+       
+        btn_print=Button(billMenuFrame,text='Print',cursor='hand2',font=("goudy old style",15,"bold"),bg="lightgreen",fg="white")
+        btn_print.place(x=2,y=80,width=120,height=50)
+
+        btn_clear_all=Button(billMenuFrame,text='Clear All',cursor='hand2',font=("goudy old style",15,"bold"),bg="gray",fg="white")
+        btn_clear_all.place(x=124,y=80,width=120,height=50)
+
+        btn_generate=Button(billMenuFrame,text='Generate/save Bill',cursor='hand2',font=("goudy old style",15,"bold"),bg="#009688",fg="white")
+        btn_generate.place(x=246,y=80,width=160,height=50)
+
+
+        #=======Footer==============
+
+
+        footer=Label(self.root,text="IMS-Inventory Management System | Developed BY-ROBIN, RITI and TANISTHA\nFor any Technical Issue contact: 983xxxxx03",font=("times new roman",11),bg="#4d636d",fg="white").pack(side=BOTTOM,fill=X)
+#=======================All Function===========================
+    def get_input(self,num):
+        xnum=self.var_cal_input.get()+str(num)
+        self.var_cal_input.set(xnum)
+    
+    def clear_cal(self):
+        self.var_cal_input.set('')
+
+    def perform_cal(self):
+        result=self.var_cal_input.get()
+        self.var_cal_input.set(eval(result))
+    def logout(self):
+        self.root.destroy()
+        os.system("python tkin.py/login.py")
+
 
 if __name__=="__main__":
     root=Tk()
