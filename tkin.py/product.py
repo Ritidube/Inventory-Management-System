@@ -189,7 +189,7 @@ class productClass:
 
 
     def get_data(self,ev):
-        f=self. EmployeeTable.focus ()
+        f=self.product_table.focus ()
         content=(self.product_table.item (f)) 
         row=content [ 'values']
         self.var_cat.set(row[2])

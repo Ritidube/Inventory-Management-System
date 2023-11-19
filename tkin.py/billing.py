@@ -1,6 +1,7 @@
 from tkinter import*
 from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
+import sqlite3
 import os
 class BillClass:
     def __init__(self,root):
@@ -25,13 +26,14 @@ class BillClass:
         self.lbl_clock=Label(self.root,text="Welcome to Inventory Management System\t\t Date: DD-MM-YYYY\t\t Time: HH:MM:SS",font=("times new roman",15),bg="#4D636D",fg="white")
         self.lbl_clock.place(x=0,y=70,relwidth=1,height=30)
 
-        #===product search Frame===
-        self.var_search=StringVar()       
+        #===product_Frame===
+               
         ProductFrame1=Frame(self.root,bd=4,relief=RIDGE,bg="white")
         ProductFrame1.place(x=6,y=110,width=410,height=550)
 
         pTitle=Label(ProductFrame1,text="All Product",font=("goudy old style",20,"bold"),bg="#262626",fg="white").pack(side=TOP,fill=X)
-
+        #====product search Frame==== 
+        self.var_search=StringVar()
         ProductFrame2=Frame(ProductFrame1,bd=2,relief=RIDGE,bg="white")
         ProductFrame2.place(x=2,y=42,width=398,height=90)
        
@@ -39,9 +41,9 @@ class BillClass:
         
         lbl_search=Label(ProductFrame2,text="Product Name",font=("times new roman",15,"bold"),bg="white").place(x=2,y=45)
         txt_search=Entry(ProductFrame2,textvariable=self.var_search,font=("times new roman",15),bg="lightyellow").place(x=128,y=47,width=150,height=22)
-        btn_search=Button(ProductFrame2,text="Search",font=("goudy old style",15),bg="#2196f3",fg="white",cursor="hand2").place(x=285,y=45,width=100,height=25)
+        btn_search=Button(ProductFrame2,text="Search",command=self.search,font=("goudy old style",15),bg="#2196f3",fg="white",cursor="hand2").place(x=285,y=45,width=100,height=25)
         btn_show_all=Button(ProductFrame2,text="Show All",font=("goudy old style",15),bg="#083531",fg="white",cursor="hand2").place(x=285,y=10,width=100,height=25)
-        #========product Detail=========
+        #========product Detail Frame=========
         ProductFrame3=Frame(ProductFrame1,bd=3,relief=RIDGE)
         ProductFrame3.place(x=2,y=148,width=398, height=375)
         
@@ -62,10 +64,10 @@ class BillClass:
         self.product_Table.heading("qty",text="QTY")
         self.product_Table.heading("status",text="Status")
         self.product_Table["show"]="headings"
-        self.product_Table.column("pid",width=90)
+        self.product_Table.column("pid",width=40)
         self.product_Table.column("name",width=100)
         self.product_Table.column("price",width=100)
-        self.product_Table.column("qty",width=100)
+        self.product_Table.column("qty",width=40)
         self.product_Table.column("status",width=100)
         self.product_Table.pack(fill=BOTH,expand=1)
         #self.product_Table.bind("<ButtonRelease-1>",self.get_data)
@@ -185,7 +187,7 @@ class BillClass:
         billFrame=Frame(self.root,bd=2,relief=RIDGE,bg='white')
         billFrame.place(x=953,y=110,width=410,height=410)
         
-        BTitle=Label(billFrame,text="Customer Bill Area",font=("goudy old style",20,"bold"),bg="#262626",fg="white").pack(side=TOP,fill=X)
+        BTitle=Label(billFrame,text="Customer Bill Area",font=("goudy old style",20,"bold"),bg="#f44336",fg="white").pack(side=TOP,fill=X)
         scrolly=Scrollbar(billFrame,orient=VERTICAL)
         scrolly.pack(side=RIGHT,fill=Y)
 
@@ -222,6 +224,7 @@ class BillClass:
 
 
         footer=Label(self.root,text="IMS-Inventory Management System | Developed BY-ROBIN, RITI and TANISTHA\nFor any Technical Issue contact: 983xxxxx03",font=("times new roman",11),bg="#4d636d",fg="white").pack(side=BOTTOM,fill=X)
+        self.show()
 #=======================All Function===========================
     def get_input(self,num):
         xnum=self.var_cal_input.get()+str(num)
@@ -233,10 +236,45 @@ class BillClass:
     def perform_cal(self):
         result=self.var_cal_input.get()
         self.var_cal_input.set(eval(result))
+    
+    
+    def show (self):
+        con=sqlite3.connect (database=r'ims.db')
+        cur=con.cursor()
+        try:
+            cur.execute("select pid,name,price,qty,status from product")
+            rows=cur.fetchall()
+            self.product_Table.delete(*self.product_Table.get_children())
+            for row in rows:
+                self.product_Table.insert('',END,values=row)
+        except Exception as ex:
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
+    
+    def search (self):
+        con=sqlite3.connect(database=r'ims.db')
+        cur=con.cursor()
+        try:
+            if self.var_search.get()=="":
+                messagebox.showerror("Error","Select Search By option", parent=self.root)
+
+            else:
+                cur.execute("select pid,name,price,qty,status from product where name LIKE '%"+self.var_searchtxt.get()+"%'")
+                rows=cur.fetchall()
+                if len(rows)!=0:
+                    self.product_table.delete(*self.product_table.get_children())
+                    for row in rows:
+                        self.product_table.insert('', END, values=row)
+                else:
+                    messagebox.showerror("Error","No record found!!!",parent=self.root)
+        except Exception as ex:
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
+
+
+    
     def logout(self):
         self.root.destroy()
         os.system("python tkin.py/login.py")
-
+    
 
 if __name__=="__main__":
     root=Tk()
