@@ -296,15 +296,17 @@ class employeeClass:
                 cur.execute("select * from employee where "+self.var_searchby.get()+" LIKE '%"+self.var_searchtxt.get()+"%'")
                 rows=cur.fetchall()
                 if len(rows)!=0:
-                    self.EmployeeTable.delete(*self. Employee Table.get_children())
+                    self.EmployeeTable.delete(*self.EmployeeTable.get_children())
                     for row in rows:
                         self. EmployeeTable.insert('', END, values=row)
                 else:
                     messagebox.showerror("Error","No record found!!!",parent=self.root)
+        except Exception as ex:
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
 
 
 if __name__=="__main__":
     root=Tk()
     obj=employeeClass(root)
-    root.mainloop()        
+    root.mainloop()    
